@@ -134,6 +134,10 @@ let Game = {
         state_menu: 0,
         state_game: 0,
         pongs: {
+            session: {
+                session_id: false,
+                player_id: false,
+            },
             player1: {
                 x: 0,
                 y: 0,
@@ -221,6 +225,8 @@ let Game = {
                         break;
                     case "SET_SESSION":
                         console.log("Server Responsed with SESSION TOKEN");
+                        Game.storage.pongs.session_id = message.session_id;
+                        Game.storage.pongs.player_id = message.payer_id;
                         break;
                 }
             },

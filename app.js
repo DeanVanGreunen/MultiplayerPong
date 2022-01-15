@@ -47,7 +47,8 @@ ws.on("connection", (con, req)=>{
             case "GET_SESSION":
                 con.send(JSON.stringify({
                     'message_type': 'SET_SESSION',
-                    'session_id': "XXX"
+                    'session_id': "XXX-XXX-XXX-XXX-XXX",
+                    'payer_id': "1"
                 }));
                 break;
         }
