@@ -24,7 +24,16 @@ server.on("upgrade", (request, socket, head) => {
     });
 });
 
+///////////////////////////////////
+// MANAGE SERVER WIDE STATE HERE //
+///////////////////////////////////
+
 let sessions = [];
+
+
+/////////////////////////
+// HANDLE CLIENTS HERE //
+/////////////////////////
 
 ws.on("connection", (con, req)=>{
     con.on('message', (message)=>{
