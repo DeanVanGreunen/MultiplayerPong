@@ -28,7 +28,40 @@ server.on("upgrade", (request, socket, head) => {
 // MANAGE SERVER WIDE STATE HERE //
 ///////////////////////////////////
 
+let queue = [];
+
 let sessions = [];
+
+class Session {
+    session_id = false;
+    player1 = {
+        con: false,
+        y: 0,
+        score: 0,
+    };
+    player2 = {
+        con: false,
+        y: 0,
+        score: 0,
+    };
+    constructor(p1, p2){
+        this.player1.con = p1;
+        this.player2.con = p2;
+        this.session_id = "TEST1";
+    }
+    sendSession(){
+        this.player1.con.send(JSON.stringify({
+            'message_type': 'SET_SESSION',
+            'session_id': this.session_id,
+            'payer_id': "1"
+        })); 
+        this.player2.con.send(JSON.stringify({
+            'message_type': 'SET_SESSION',
+            'session_id': this.session_id,
+            'payer_id': "2"
+        })); 
+    }
+}
 
 
 /////////////////////////
@@ -44,11 +77,24 @@ ws.on("connection", (con, req)=>{
                     'message_type': 'PONG'
                 }));        
                 break;
-            case "GET_SESSION":
+            case "JOIN_QUEUE":
                 con.send(JSON.stringify({
-                    'message_type': 'SET_SESSION',
-                    'session_id': "XXX-XXX-XXX-XXX-XXX",
-                    'payer_id': "1"
+                    'message_type': 'JOINED_QUEUE',
+                }));
+                if(!(queue.indexOf(con) >= 0)){
+                    queue.push(con);
+                }                
+                if(queue.length == 2){
+                    let player1 = queue[0];
+                    let player2 = queue[1];
+                    queue.pop();
+                    queue.pop();
+                    sessions.push(new Session(player1, player2));
+                    sessions[sessions.length - 1].sendSession();
+                }
+                break;
+            case "START_GAME":
+                con.send(JSON.stringify({
                 }));
                 break;
         }

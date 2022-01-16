@@ -185,7 +185,9 @@ let Game = {
             message: Object.freeze({
                 PING: "PING",
                 GET_SESSION: "GET_SESSION",
-                SET_SESSION: "SET_SESSION"
+                SET_SESSION: "SET_SESSION",
+                JOIN_QUEUE: "JOIN_QUEUE",
+                START_GAME: 'START_GAME'
             }),
         },
         api: {
@@ -223,10 +225,18 @@ let Game = {
                     case "PONG":
                         console.log("Server Detected");
                         break;
+                    case "JOINED_QUEUE":
+                        console.log("CLIENT IN QUEUE");
+                        Game.storage.state_game = Game.enums.GAMESTATE.LOADING;
+                        break;
                     case "SET_SESSION":
                         console.log("Server Responsed with SESSION TOKEN");
                         Game.storage.pongs.session_id = message.session_id;
                         Game.storage.pongs.player_id = message.payer_id;
+                        break;
+                    case "START_GAME":
+                        console.log("Server Responsed with SESSION TOKEN");
+                        Game.storage.state_game = Game.enums.GAMESTATE.LOADING;
                         break;
                 }
             },
@@ -308,7 +318,7 @@ let Game = {
                 Game.storage.pongs.ball.y = (Game.sizes.HEIGHT / 2) - (Game.storage.pongs.ball.radius);
                 Game.storage.state_menu = Game.enums.MENU.GAME;
                 Game.storage.state_game = Game.enums.GAMESTATE.LOADING;
-                Game.networking.api.sendMessage(Game.networking.enums.message.GET_SESSION);          
+                Game.networking.api.sendMessage(Game.networking.enums.message.JOIN_QUEUE);          
             }
 
             Game.storage.menu.main.about = new Button();
